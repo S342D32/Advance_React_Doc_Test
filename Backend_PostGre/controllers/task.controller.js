@@ -9,15 +9,32 @@ const upload = multer({ storage });
 
 const getTasks = async (req, res) => {
   try {
-    const tasks = await getAllTasks();
-    const BASE_URL = process.env.BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
+    const { page = 1, limit = 5, sortBy = "id", order = "ASC" } = req.query;
+
+    const { rows: tasks, total } = await getAllTasks(
+      parseInt(page),
+      parseInt(limit),
+      sortBy,
+      order,
+    );
+    const BASE_URL =
+      process.env.BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
     const formattedTasks = tasks.map((task) => ({
       ...task,
       task_image: task.task_image
         ? `${BASE_URL}/${task.task_image.replace(/\\/g, "/")}`
         : null,
     }));
-    res.status(200).json({ message: "Tasks fetched successfully.", tasks: formattedTasks });
+    res.status(200).json({
+      message: "Tasks fetched successfully.",
+      data: formattedTasks,
+      pagination: {
+        totalItems: total,
+        totalPages: Math.ceil(total / parseInt(limit)),
+        currentPage: parseInt(page),
+        itemsPerPage: parseInt(limit),
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -32,7 +49,12 @@ const postTask = async (req, res) => {
       return res.status(400).json({ message: "All fields are required." });
     }
 
-    const task = await createTask(task_name, task_type, task_description, task_image);
+    const task = await createTask(
+      task_name,
+      task_type,
+      task_description,
+      task_image,
+    );
     res.status(201).json({ message: "Task added successfully.", task });
   } catch (error) {
     res.status(500).json({ message: error.message });
