@@ -15,7 +15,7 @@ const TaskAdd = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await createTask(task);
+      await createTask(task, image);
       toast.success("Task created!");
     } catch (error) {
       toast.error("Failed to create task");
@@ -34,7 +34,7 @@ const TaskAdd = () => {
                   Task Image
                 </label>
                 <input
-                  type="image"
+                  type="file"
                   accept="image/*"
                   onChange={handleImageUpload}
                 />
@@ -113,6 +113,7 @@ const TaskAdd = () => {
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
               />
             </div>
+            <button>Submit</button>
           </form>
         </div>
         <div className="col-span-2 border rounded-lg border-gray-500">

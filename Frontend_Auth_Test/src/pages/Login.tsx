@@ -27,7 +27,7 @@ const Login = () => {
         toast.success("Login successful!");
         navigate("/dashboard");
       })
-      .catch((err) => toast.error(err));
+      .catch((err) => toast.error(typeof err === "string" ? err : err?.message || "Login failed"));
   };
 
   return (

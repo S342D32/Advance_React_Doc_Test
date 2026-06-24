@@ -6,11 +6,12 @@ const taskRoutes = require("./routes/task.route");
 
 const app = express();
 app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:3000",
+  origin: process.env.CLIENT_URL || "http://localhost:5173",
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 }));
 app.use(express.json());
+app.use("/uploads", express.static("uploads"));
 
 const PORT = process.env.PORT || 5000;
 app.use("/api", authRoutes);
